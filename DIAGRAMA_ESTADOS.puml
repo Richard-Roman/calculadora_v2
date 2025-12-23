@@ -1,0 +1,32 @@
+@startuml MaquinaEstados
+!theme plain
+
+title ¿Por qué 4 estados? (¿Qué operación es válida AHORA?)
+
+[*] --> Inicial: C
+
+Inicial --> Ingresando: dígito
+Ingresando --> Inicial: C
+Ingresando --> OpSeleccionada: operador
+OpSeleccionada --> Ingresando: número (ejecuta op anterior)
+OpSeleccionada --> OpSeleccionada: nuevo operador
+OpSeleccionada --> Inicial: C
+
+Ingresando --> Ingresando: más dígitos
+
+note right of Inicial
+  Espera: número
+  Ignora: operador
+end note
+
+note right of Ingresando
+  Espera: operador o =
+  Rechaza: nada
+end note
+
+note right of OpSeleccionada
+  Espera: número
+  Permite: cambiar op
+end note
+
+@enduml

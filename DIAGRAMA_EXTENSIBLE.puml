@@ -1,0 +1,35 @@
+@startuml ExtensionStrategy
+!theme plain
+
+title ¿Cómo agregar operación sin romper nada?
+
+interface Operacion {
+    ejecutar(a, b)
+}
+
+class Suma
+class Division
+class "¿Logaritmo?" as NuevaOp
+
+Operacion <|.. Suma
+Operacion <|.. Division
+Operacion <|.. NuevaOp
+
+class Calculadora {
+    calcular(): void
+}
+
+Calculadora --> Operacion: delega
+
+note right of NuevaOp
+  1 clase nueva
+  0 cambios a Calculadora
+end note
+
+note bottom of Calculadora
+  Débilmente acoplada.
+  No conoce implementaciones.
+  Strategy Pattern.
+end note
+
+@enduml

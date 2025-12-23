@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            width: 320px;
+        }
+
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #display {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: right;
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            min-height: 50px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 50px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-number {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-number:hover {
+            background: #e8e8e8;
+        }
+
+        .btn-operator {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-operator:hover {
+            background: #5568d3;
+        }
+
+        .btn-operator.active {
+            background: #ff9500;
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 149, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        .btn-unary {
+            background: #764ba2;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn-unary:hover {
+            background: #653a82;
+        }
+
+        .btn-clear {
+            background: #ff6b6b;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .btn-clear:hover {
+            background: #ee5a52;
+        }
+
+        .btn-equals {
+            background: #51cf66;
+            color: white;
+            grid-column: span 2;
+            font-size: 18px;
+        }
+
+        .btn-equals:hover {
+            background: #40c057;
+        }
+
+        .btn-delete {
+            background: #ffa94d;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff8c42;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Calculadora</div>
+        <div id="display" th:text="${display}">0</div>
+        
+        <div class="buttons-grid">
+            <!-- Fila 1: Operaciones unarias -->
+            <button class="btn-unary" onclick="enviarOperacionUnaria('%')">%</button>
+            <button class="btn-unary" onclick="enviarOperacionUnaria('RAIZ_CUADRADA')">√</button>
+            <button class="btn-unary" onclick="enviarOperacionUnaria('CUADRADO')">x²</button>
+            <button class="btn-unary" onclick="enviarOperacionUnaria('INVERSO')">1/x</button>
+
+            <!-- Fila 2: Limpiar -->
+            <button class="btn-clear" onclick="limpiar()">C</button>
+            <button class="btn-delete" onclick="eliminar()">←</button>
+            <button class="btn-operator" th:class="${operacionSeleccionada == 'DIVISION' ? 'btn-operator active' : 'btn-operator'}" onclick="enviarOperacion('DIVISION')">÷</button>
+
+            <!-- Fila 3: Números 7-9 y multiplicación -->
+            <button class="btn-number" onclick="enviarNumero('7')">7</button>
+            <button class="btn-number" onclick="enviarNumero('8')">8</button>
+            <button class="btn-number" onclick="enviarNumero('9')">9</button>
+            <button class="btn-operator" th:class="${operacionSeleccionada == 'MULTIPLICACION' ? 'btn-operator active' : 'btn-operator'}" onclick="enviarOperacion('MULTIPLICACION')">×</button>
+
+            <!-- Fila 4: Números 4-6 y resta -->
+            <button class="btn-number" onclick="enviarNumero('4')">4</button>
+            <button class="btn-number" onclick="enviarNumero('5')">5</button>
+            <button class="btn-number" onclick="enviarNumero('6')">6</button>
+            <button class="btn-operator" th:class="${operacionSeleccionada == 'RESTA' ? 'btn-operator active' : 'btn-operator'}" onclick="enviarOperacion('RESTA')">−</button>
+
+            <!-- Fila 5: Números 1-3 y suma -->
+            <button class="btn-number" onclick="enviarNumero('1')">1</button>
+            <button class="btn-number" onclick="enviarNumero('2')">2</button>
+            <button class="btn-number" onclick="enviarNumero('3')">3</button>
+            <button class="btn-operator" th:class="${operacionSeleccionada == 'SUMA' ? 'btn-operator active' : 'btn-operator'}" onclick="enviarOperacion('SUMA')">+</button>
+
+            <!-- Fila 6: Cambio de signo, 0, punto y equals -->
+            <button class="btn-unary" onclick="enviarOperacionUnaria('CAMBIO_SIGNO')">±</button>
+            <button class="btn-number" onclick="enviarNumero('0')">0</button>
+            <button class="btn-number" onclick="enviarNumero('.')">.</button>
+            <button class="btn-equals" onclick="calcular()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let operacionActual = '';
+
+        function actualizarBotonesOperacion(operacion) {
+            // Remover clase active de todos los botones de operación
+            document.querySelectorAll('.btn-operator').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Agregar clase active al botón correcto
+            if (operacion === 'DIVISION') {
+                document.querySelector('button[onclick*="DIVISION"]').classList.add('active');
+            } else if (operacion === 'MULTIPLICACION') {
+                document.querySelector('button[onclick*="MULTIPLICACION"]').classList.add('active');
+            } else if (operacion === 'RESTA') {
+                document.querySelector('button[onclick*="RESTA"]').classList.add('active');
+            } else if (operacion === 'SUMA') {
+                document.querySelector('button[onclick*="SUMA"]').classList.add('active');
+            }
+            operacionActual = operacion;
+        }
+
+        function enviarNumero(numero) {
+            fetch('/api/numero?numero=' + numero, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('display').textContent = data.display;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function enviarOperacion(operacion) {
+            fetch('/api/operacion?operacion=' + operacion, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('display').textContent = data.display;
+                actualizarBotonesOperacion(operacion);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function calcular() {
+            fetch('/api/calcular', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('display').textContent = data.display;
+                actualizarBotonesOperacion('');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function limpiar() {
+            fetch('/api/limpiar', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('display').textContent = data.display;
+                actualizarBotonesOperacion('');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function enviarOperacionUnaria(operacion) {
+            if (operacion === '%') {
+                enviarOperacion('MODULO');
+                return;
+            }
+            fetch('/api/unaria?operacion=' + operacion, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('display').textContent = data.display;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function eliminar() {
+            fetch('/api/eliminar', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('display').textContent = data.display;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Inicializar estado de botones al cargar la página
+        window.addEventListener('load', function() {
+            const operacionSeleccionada = document.querySelector('[data-operacion]')?.getAttribute('data-operacion') || '';
+            actualizarBotonesOperacion(operacionSeleccionada);
+        });
+    </script>
+</body>
+</html>

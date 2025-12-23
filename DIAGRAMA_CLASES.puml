@@ -1,0 +1,23 @@
+@startuml CalculadoraFlujo
+!theme plain
+
+title ¿Quién es Source of Truth?
+
+participant User
+participant "UI\n(Thymeleaf)" as UI
+participant "CalculadoraSession\n(servidor)" as Srv
+
+User -> UI: click 3, +, 4, =
+UI -> Srv: POST /operacion\n(datos de entrada)
+Srv -> Srv: edita buffer\n(EditorDeEntrada)
+Srv -> Srv: calcula\n(Calculadora)
+Srv -> UI: display + estado
+UI -> User: muestra resultado
+
+note over Srv
+  El servidor mantiene el estado COMPLETO.
+  La UI es stateless: siempre pregunta.
+  → Consistencia garantizada
+end note
+
+@enduml

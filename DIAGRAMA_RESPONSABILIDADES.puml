@@ -1,0 +1,36 @@
+@startuml CapasResponsabilidades
+!theme plain
+
+title ¿Cuántas capas? ¿Por qué?
+
+package "domain/" as dom {
+    rectangle "Calculadora + Estados + Operaciones\n(LÓGICA PURA)" as logic
+}
+
+package "application/" as app {
+    rectangle "CalculadoraSession\n(ORQUESTACIÓN)" as orch
+}
+
+package "web/" as web {
+    rectangle "PageController + ApiController\n(PRESENTACIÓN HTTP)" as pres
+}
+
+pres -down-> orch: delega\ncasos de uso
+orch -down-> logic: ejecuta\nlógica
+
+note bottom of dom
+  Testeable sin Spring.
+  Reutilizable en CLI, gRPC, etc.
+end note
+
+note bottom of app
+  Casos de uso.
+  Agnóstica de UI.
+end note
+
+note bottom of web
+  HTTP es un detalle.
+  No toca lógica.
+end note
+
+@enduml

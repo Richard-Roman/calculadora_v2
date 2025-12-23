@@ -1,0 +1,73 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Icon?
+.Spotlight-V100
+.Trashes
+Desktop.ini
+ehthumbs.db
+
+# IDE y editores
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+*.code-workspace
+.classpath
+.project
+.settings/
+
+# Maven/Java
+**/target/
+**/generated-sources/
+**/maven-status/
+**/surefire-reports/
+**/failsafe-reports/
+**/jacoco.exec
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Secretos y credenciales (no subir nunca)
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
+*.p7b
+*.p7c
+*.secrets
+*.credentials
+*.passwd
+*.password
+*.token
+*.tokens
+
+# Archivos temporales
+*.swp
+*.swo
+*~
+*.orig
+*.rej
+core
+
+# NetBeans (si alguien lo usa)
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+#
+CAMBIOS_SESION.md
