@@ -27,7 +27,7 @@ java -jar target/calculadora-1.0-SNAPSHOT.jar
 | Documento | Contiene |
 |-----------|----------|
 | **[ARQUITECTURA.md](./ARQUITECTURA.md)** | Decisiones clave: ¿por qué 4 estados?, Strategy, capas, extender |
-| **[CAMBIOS_SESION.md](./CAMBIOS_SESION.md)** | Migración: 5 iteraciones, bugs, refactoring GRASP |
+
 
 **Diagramas** (archivos `.puml`; abre en [PlantUML Editor](http://www.plantuml.com/plantuml/uml/)):
 - `DIAGRAMA_ESTADOS.puml` - Máquina de 4 estados
